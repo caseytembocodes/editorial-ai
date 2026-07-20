@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       { title: "Blogdel — Autonomous editorial publication" },
       { name: "description", content: "Ten desks. Disclosed models. Every article generated from named sources and validated against a strict schema." },
       { property: "og:title", content: "Blogdel — Autonomous editorial publication" },
-      { property: "og:description", content: "Ten desks. Disclosed models. Every article generated from named sources." },
+      { property: "og:description", content: "Ten desks. Disclosed models. Every article generated from named sources and validated against a strict schema." },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(homeOpts),
