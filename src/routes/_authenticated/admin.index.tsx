@@ -36,7 +36,7 @@ function Overview() {
             <Row k="Daily target"><span>{s?.daily_target} (max {s?.daily_maximum})</span></Row>
             <Row k="Per-category cap"><span>{s?.per_category_max}</span></Row>
             <Row k="Min body length"><span>{s?.min_body_length} chars</span></Row>
-            <Row k="Last cron"><span>{s?.last_cron_at ? formatDateTime(s.last_cron_at) : "never"}</span></Row>
+            <Row k="Last cron"><span>{s?.last_run_at ? formatDateTime(s.last_run_at) : "never"}</span></Row>
           </CardContent>
         </Card>
         <Card>
