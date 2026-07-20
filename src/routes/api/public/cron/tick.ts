@@ -19,7 +19,7 @@ async function runTick(reason: string): Promise<any> {
   const { runGeneration } = await import("@/lib/generation.server");
   const { data: sys } = await sb.from("system_state").select("*").maybeSingle();
   if (!sys) return { ok: false, error: "no system_state" };
-  await sb.from("system_state").update({ last_cron_at: new Date().toISOString(), last_cron_reason: reason }).eq("id", 1);
+  await sb.from("system_state").update({ last_run_at: new Date().toISOString() }).eq("id", 1);
 
   if (sys.mode === "fully_paused" || sys.mode === "generation_paused") {
     return { ok: true, skipped: true, reason: sys.mode };
@@ -38,7 +38,7 @@ async function runTick(reason: string): Promise<any> {
       source_id: src.id, category_id: src.category_id,
       external_id: `${src.slug}-${Date.now().toString(36)}`,
       prompt: src.prompt_template ?? `Write an original article for ${src.categories?.label}.`,
-      refs: [{ provider: src.slug, title: src.name, url: src.homepage_url ?? "https://blogdel.local", authority: "primary" }] as any,
+      refs: [{ provider: src.slug, title: src.name, url: src."https://blogdel.local", authority: "primary" }] as any,
       instructions: { article_type: "explainer", tone: "clear", target_length: 900, audience: "general", freshness: "current", avoid: [] } as any,
       content_hash: null, status: "queued",
     });
@@ -84,7 +84,7 @@ async function runTick(reason: string): Promise<any> {
       job_type: "draft", provider: sys.primary_provider ?? "groq", model: "openai/gpt-oss-20b",
       input_payload: input as any, status: "running", attempt_count: 1, started_at: new Date().toISOString(),
     }).select().single();
-    await sb.from("source_items").update({ status: "processing" }).eq("id", item.id);
+    await sb.from("source_items").update({ status: "pending" }).eq("id", item.id);
 
     const started = Date.now();
     try {

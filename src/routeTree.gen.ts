@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminSourcesIndexRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminJobsIndexRouteImport } from './routes/_authenticated/admin.jobs.index'
 import { Route as AuthenticatedAdminAuthorsIndexRouteImport } from './routes/_authenticated/admin.authors.index'
 import { Route as AuthenticatedAdminArticlesIndexRouteImport } from './routes/_authenticated/admin.articles.index'
+import { Route as ApiPublicCronTickRouteImport } from './routes/api/public/cron/tick'
 import { Route as AuthenticatedAdminSourcesIdRouteImport } from './routes/_authenticated/admin.sources.$id'
 import { Route as AuthenticatedAdminJobsIdRouteImport } from './routes/_authenticated/admin.jobs.$id'
 import { Route as AuthenticatedAdminAuthorsIdRouteImport } from './routes/_authenticated/admin.authors.$id'
@@ -148,6 +149,11 @@ const AuthenticatedAdminArticlesIndexRoute =
     path: '/articles/',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicCronTickRoute = ApiPublicCronTickRouteImport.update({
+  id: '/api/public/cron/tick',
+  path: '/api/public/cron/tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminSourcesIdRoute =
   AuthenticatedAdminSourcesIdRouteImport.update({
     id: '/sources/$id',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/admin/authors/$id': typeof AuthenticatedAdminAuthorsIdRoute
   '/admin/jobs/$id': typeof AuthenticatedAdminJobsIdRoute
   '/admin/sources/$id': typeof AuthenticatedAdminSourcesIdRoute
+  '/api/public/cron/tick': typeof ApiPublicCronTickRoute
   '/admin/articles/': typeof AuthenticatedAdminArticlesIndexRoute
   '/admin/authors/': typeof AuthenticatedAdminAuthorsIndexRoute
   '/admin/jobs/': typeof AuthenticatedAdminJobsIndexRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/admin/authors/$id': typeof AuthenticatedAdminAuthorsIdRoute
   '/admin/jobs/$id': typeof AuthenticatedAdminJobsIdRoute
   '/admin/sources/$id': typeof AuthenticatedAdminSourcesIdRoute
+  '/api/public/cron/tick': typeof ApiPublicCronTickRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesIndexRoute
   '/admin/authors': typeof AuthenticatedAdminAuthorsIndexRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsIndexRoute
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/authors/$id': typeof AuthenticatedAdminAuthorsIdRoute
   '/_authenticated/admin/jobs/$id': typeof AuthenticatedAdminJobsIdRoute
   '/_authenticated/admin/sources/$id': typeof AuthenticatedAdminSourcesIdRoute
+  '/api/public/cron/tick': typeof ApiPublicCronTickRoute
   '/_authenticated/admin/articles/': typeof AuthenticatedAdminArticlesIndexRoute
   '/_authenticated/admin/authors/': typeof AuthenticatedAdminAuthorsIndexRoute
   '/_authenticated/admin/jobs/': typeof AuthenticatedAdminJobsIndexRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/admin/authors/$id'
     | '/admin/jobs/$id'
     | '/admin/sources/$id'
+    | '/api/public/cron/tick'
     | '/admin/articles/'
     | '/admin/authors/'
     | '/admin/jobs/'
@@ -300,6 +310,7 @@ export interface FileRouteTypes {
     | '/admin/authors/$id'
     | '/admin/jobs/$id'
     | '/admin/sources/$id'
+    | '/api/public/cron/tick'
     | '/admin/articles'
     | '/admin/authors'
     | '/admin/jobs'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/authors/$id'
     | '/_authenticated/admin/jobs/$id'
     | '/_authenticated/admin/sources/$id'
+    | '/api/public/cron/tick'
     | '/_authenticated/admin/articles/'
     | '/_authenticated/admin/authors/'
     | '/_authenticated/admin/jobs/'
@@ -344,6 +356,7 @@ export interface RootRouteChildren {
   BlogsSlugRoute: typeof BlogsSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
+  ApiPublicCronTickRoute: typeof ApiPublicCronTickRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -495,6 +508,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminArticlesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/cron/tick': {
+      id: '/api/public/cron/tick'
+      path: '/api/public/cron/tick'
+      fullPath: '/api/public/cron/tick'
+      preLoaderRoute: typeof ApiPublicCronTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/sources/$id': {
       id: '/_authenticated/admin/sources/$id'
       path: '/sources/$id'
@@ -585,6 +605,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogsSlugRoute: BlogsSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
   BlogsIndexRoute: BlogsIndexRoute,
+  ApiPublicCronTickRoute: ApiPublicCronTickRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
