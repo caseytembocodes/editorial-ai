@@ -19,16 +19,24 @@ function serverPublic() {
   });
 }
 
-const ARTICLE_COLS =
-  "id,slug,title,description,category_id,author_id,article_type,status,featured_image_url,featured_image_alt,reading_time_minutes,word_count,published_at,updated_at,provider,model,keywords,body_markdown,is_demo";
+// Strip non-serializable / heavy columns before returning to the client.
+function stripArticle<T extends Record<string, any>>(row: T): Omit<T, "search_tsv"> {
+  const { search_tsv, ...rest } = row as any;
+  return rest;
+}
+function stripMany<T extends Record<string, any>>(rows: T[] | null | undefined): Omit<T, "search_tsv">[] {
+  return (rows ?? []).map(stripArticle);
+}
+
+const REL = "categories(slug,label), authors(slug,display_name)";
 
 export const getHomepage = createServerFn({ method: "GET" }).handler(async () => {
   const sb = serverPublic();
   const [{ data: categories }, { data: articles }] = await Promise.all([
     sb.from("categories").select("id,slug,label,internal_label,description,sort_order").order("sort_order"),
-    sb.from("articles").select(ARTICLE_COLS + ",categories(slug,label),authors(slug,display_name)").eq("status","published").order("published_at",{ ascending: false }).limit(60),
+    sb.from("articles").select(`*, ${REL}`).eq("status", "published").order("published_at", { ascending: false }).limit(60),
   ]);
-  return { categories: categories ?? [], articles: articles ?? [] };
+  return { categories: categories ?? [], articles: stripMany(articles as any) };
 });
 
 export const listArticles = createServerFn({ method: "GET" })
@@ -37,7 +45,7 @@ export const listArticles = createServerFn({ method: "GET" })
     const sb = serverPublic();
     const perPage = Math.min(48, Math.max(1, data.perPage ?? 12));
     const page = Math.max(1, data.page ?? 1);
-    let query = sb.from("articles").select(ARTICLE_COLS + ",categories(slug,label),authors(slug,display_name)", { count: "exact" }).eq("status","published");
+    let query = sb.from("articles").select(`*, ${REL}`, { count: "exact" }).eq("status","published");
     if (data.category) {
       const { data: cat } = await sb.from("categories").select("id").eq("slug", data.category).maybeSingle();
       if (cat) query = query.eq("category_id", cat.id);
@@ -48,27 +56,29 @@ export const listArticles = createServerFn({ method: "GET" })
     }
     if (data.type) query = query.eq("article_type", data.type as never);
     if (data.q && data.q.trim()) {
-      query = query.textSearch("search_tsv", data.q.trim().split(/\s+/).map(t=>t.replace(/[^a-z0-9]/gi,"")).filter(Boolean).join(" & "), { config: "english" });
+      const tsq = data.q.trim().split(/\s+/).map(t=>t.replace(/[^a-z0-9]/gi,"")).filter(Boolean).join(" & ");
+      if (tsq) query = query.textSearch("search_tsv", tsq, { config: "english" });
     }
     if (data.sort === "oldest") query = query.order("published_at",{ ascending: true });
     else query = query.order("published_at",{ ascending: false });
     query = query.range((page-1)*perPage, page*perPage - 1);
     const { data: rows, count } = await query;
-    return { rows: rows ?? [], count: count ?? 0, page, perPage };
+    return { rows: stripMany(rows as any), count: count ?? 0, page, perPage };
   });
 
 export const getArticleBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => d)
   .handler(async ({ data }) => {
     const sb = serverPublic();
-    const { data: article } = await sb.from("articles")
-      .select(ARTICLE_COLS + ",categories(slug,label),authors(slug,display_name,description)")
+    const { data: articleRaw } = await sb.from("articles")
+      .select(`*, categories(slug,label), authors(slug,display_name,description)`)
       .eq("slug", data.slug).eq("status","published").maybeSingle();
-    if (!article) return null;
+    if (!articleRaw) return null;
+    const article = stripArticle(articleRaw as any);
     const [{ data: refs }, { data: related }] = await Promise.all([
-      sb.from("article_references").select("*").eq("article_id", article.id).order("position"),
-      sb.from("articles").select("id,slug,title,description,published_at,reading_time_minutes,categories(slug,label),authors(slug,display_name)")
-        .eq("status","published").eq("category_id", article.category_id).neq("id", article.id)
+      sb.from("article_references").select("*").eq("article_id", (article as any).id).order("position"),
+      sb.from("articles").select(`id,slug,title,description,published_at,reading_time_minutes, ${REL}`)
+        .eq("status","published").eq("category_id", (article as any).category_id).neq("id", (article as any).id)
         .order("published_at",{ ascending: false }).limit(4),
     ]);
     return { article, refs: refs ?? [], related: related ?? [] };
@@ -83,12 +93,12 @@ export const getCategoryPage = createServerFn({ method: "GET" })
     const perPage = 12;
     const page = Math.max(1, data.page ?? 1);
     const [{ data: articles, count }, { data: authors }] = await Promise.all([
-      sb.from("articles").select(ARTICLE_COLS + ",categories(slug,label),authors(slug,display_name)", { count: "exact" })
+      sb.from("articles").select(`*, ${REL}`, { count: "exact" })
         .eq("category_id", cat.id).eq("status","published").order("published_at",{ ascending: false })
         .range((page-1)*perPage, page*perPage - 1),
       sb.from("authors").select("id,slug,display_name,article_count").eq("category_id", cat.id).eq("is_active",true).order("display_name"),
     ]);
-    return { category: cat, articles: articles ?? [], count: count ?? 0, page, perPage, authors: authors ?? [] };
+    return { category: cat, articles: stripMany(articles as any), count: count ?? 0, page, perPage, authors: authors ?? [] };
   });
 
 export const getAuthorPage = createServerFn({ method: "GET" })
@@ -98,24 +108,24 @@ export const getAuthorPage = createServerFn({ method: "GET" })
     const { data: author } = await sb.from("authors").select("*,categories(slug,label)").eq("slug", data.slug).maybeSingle();
     if (!author) return null;
     const { data: articles } = await sb.from("articles")
-      .select(ARTICLE_COLS + ",categories(slug,label),authors(slug,display_name)")
-      .eq("author_id", author.id).eq("status","published").order("published_at",{ ascending: false }).limit(30);
-    return { author, articles: articles ?? [] };
+      .select(`*, ${REL}`)
+      .eq("author_id", (author as any).id).eq("status","published").order("published_at",{ ascending: false }).limit(30);
+    return { author, articles: stripMany(articles as any) };
   });
 
 export const searchArticles = createServerFn({ method: "GET" })
   .inputValidator((d: { q: string; category?: string }) => d)
   .handler(async ({ data }) => {
     const q = (data.q ?? "").trim();
-    if (!q) return { rows: [], q: "" };
+    if (!q) return { rows: [] as any[], q: "" };
     const sb = serverPublic();
     const tsq = q.split(/\s+/).map(t=>t.replace(/[^a-z0-9]/gi,"")).filter(Boolean).join(" & ");
-    let query = sb.from("articles").select(ARTICLE_COLS + ",categories(slug,label),authors(slug,display_name)").eq("status","published");
+    let query = sb.from("articles").select(`*, ${REL}`).eq("status","published");
     if (tsq) query = query.textSearch("search_tsv", tsq, { config: "english" });
     if (data.category) {
       const { data: cat } = await sb.from("categories").select("id").eq("slug", data.category).maybeSingle();
       if (cat) query = query.eq("category_id", cat.id);
     }
     const { data: rows } = await query.order("published_at",{ ascending: false }).limit(40);
-    return { rows: rows ?? [], q };
+    return { rows: stripMany(rows as any), q };
   });
