@@ -258,9 +258,10 @@ export const manualGenerate = createServerFn({ method: "POST" }).middleware([req
     context.supabase.from("authors").select("id,display_name").eq("category_id", cat.id).eq("is_active",true).order("last_used_at",{ ascending: true, nullsFirst: true }).limit(1).maybeSingle(),
   ]);
   if (!author) throw new Error("No active author for category");
+  if (!src) throw new Error("No evergreen source configured for this category");
 
   const { data: sourceItem, error: siErr } = await context.supabase.from("source_items").insert({
-    source_id: src?.id, category_id: cat.id,
+    source_id: src.id, category_id: cat.id,
     external_id: "manual-" + Date.now().toString(36),
     prompt: input.prompt, refs: input.references as any, instructions: input.instructions as any,
     content_hash: null, status: "queued",
