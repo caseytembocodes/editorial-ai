@@ -32,7 +32,7 @@ async function runTick(reason: string): Promise<any> {
   // 1) Seed one new source_item per enabled evergreen source that has none queued.
   const { data: sources } = await sb.from("sources").select("*,categories(slug,label)").eq("is_enabled", true).eq("source_type", "evergreen");
   for (const src of sources ?? []) {
-    const { count } = await sb.from("source_items").select("*", { count: "exact", head: true }).eq("source_id", src.id).in("status", ["queued","processing"]);
+    const { count } = await sb.from("source_items").select("*", { count: "exact", head: true }).eq("source_id", src.id).in("status", ["queued","pending"]);
     if ((count ?? 0) > 0) continue;
     await sb.from("source_items").insert({
       source_id: src.id, category_id: src.category_id,
