@@ -9,7 +9,7 @@ import { getMyRole } from "@/lib/admin.functions";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
-const LINKS = [
+const LINKS: { to: string; label: string; icon: any; exact?: boolean }[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/sources", label: "Sources", icon: Radio },
   { to: "/admin/jobs", label: "Delegation jobs", icon: ListChecks },
@@ -20,7 +20,7 @@ const LINKS = [
   { to: "/admin/database", label: "Database", icon: Database },
   { to: "/admin/system", label: "System", icon: Settings2 },
   { to: "/admin/manual", label: "Manual trigger", icon: Beaker },
-] as const;
+];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const loc = useLocation();
