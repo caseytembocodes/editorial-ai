@@ -84,6 +84,8 @@ export const getJob = createServerFn({ method: "GET" }).middleware([requireSupab
   return { job, events: events ?? [] };
 });
 
+function stripArt<T extends Record<string, any>>(row: T) { const { search_tsv, ...rest } = row as any; return rest; }
+
 export const listAllArticles = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).inputValidator((d: { status?: string; q?: string }) => d).handler(async ({ context, data }) => {
   let q = context.supabase.from("articles").select("*,categories(slug,label),authors(display_name,slug)").order("created_at",{ ascending: false }).limit(200);
   if (data.status) q = q.eq("status", data.status as never);
@@ -92,7 +94,7 @@ export const listAllArticles = createServerFn({ method: "GET" }).middleware([req
     if (tsq) q = q.textSearch("search_tsv", tsq, { config: "english" });
   }
   const { data: rows } = await q;
-  return rows ?? [];
+  return (rows ?? []).map(stripArt);
 });
 
 export const getArticleAdmin = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).inputValidator((d: { id: string }) => d).handler(async ({ context, data }) => {
@@ -101,7 +103,7 @@ export const getArticleAdmin = createServerFn({ method: "GET" }).middleware([req
     context.supabase.from("article_references").select("*").eq("article_id", data.id).order("position"),
     context.supabase.from("article_versions").select("*").eq("article_id", data.id).order("version_number",{ ascending: false }).limit(20),
   ]);
-  return { article, refs: refs ?? [], versions: versions ?? [] };
+  return { article: article ? stripArt(article) : null, refs: refs ?? [], versions: versions ?? [] };
 });
 
 export const updateArticleStatus = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((d: any) =>
