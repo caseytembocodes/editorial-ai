@@ -38,7 +38,7 @@ async function runTick(reason: string): Promise<any> {
       source_id: src.id, category_id: src.category_id,
       external_id: `${src.slug}-${Date.now().toString(36)}`,
       prompt: src.prompt_template ?? `Write an original article for ${src.categories?.label}.`,
-      refs: [{ provider: src.slug, title: src.name, url: src."https://blogdel.local", authority: "primary" }] as any,
+      refs: [{ provider: src.slug, title: src.name, url: "https://blogdel.local", authority: "primary" }] as any,
       instructions: { article_type: "explainer", tone: "clear", target_length: 900, audience: "general", freshness: "current", avoid: [] } as any,
       content_hash: null, status: "queued",
     });
