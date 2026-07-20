@@ -9,38 +9,393 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as DisclosureRouteImport } from './routes/disclosure'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
+import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
+import { Route as AuthorsSlugRouteImport } from './routes/authors.$slug'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminSystemRouteImport } from './routes/_authenticated/admin.system'
+import { Route as AuthenticatedAdminSchemaRouteImport } from './routes/_authenticated/admin.schema'
+import { Route as AuthenticatedAdminManualRouteImport } from './routes/_authenticated/admin.manual'
+import { Route as AuthenticatedAdminDatabaseRouteImport } from './routes/_authenticated/admin.database'
+import { Route as AuthenticatedAdminConditionsRouteImport } from './routes/_authenticated/admin.conditions'
+import { Route as AuthenticatedAdminSourcesIndexRouteImport } from './routes/_authenticated/admin.sources.index'
+import { Route as AuthenticatedAdminJobsIndexRouteImport } from './routes/_authenticated/admin.jobs.index'
+import { Route as AuthenticatedAdminAuthorsIndexRouteImport } from './routes/_authenticated/admin.authors.index'
+import { Route as AuthenticatedAdminArticlesIndexRouteImport } from './routes/_authenticated/admin.articles.index'
+import { Route as ApiPublicCronTickRouteImport } from './routes/api/public/cron/tick'
+import { Route as AuthenticatedAdminSourcesIdRouteImport } from './routes/_authenticated/admin.sources.$id'
+import { Route as AuthenticatedAdminJobsIdRouteImport } from './routes/_authenticated/admin.jobs.$id'
+import { Route as AuthenticatedAdminAuthorsIdRouteImport } from './routes/_authenticated/admin.authors.$id'
+import { Route as AuthenticatedAdminArticlesIdRouteImport } from './routes/_authenticated/admin.articles.$id'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclosureRoute = DisclosureRouteImport.update({
+  id: '/disclosure',
+  path: '/disclosure',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogsIndexRoute = BlogsIndexRouteImport.update({
+  id: '/blogs/',
+  path: '/blogs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategorySlugRoute = CategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsSlugRoute = BlogsSlugRouteImport.update({
+  id: '/blogs/$slug',
+  path: '/blogs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthorsSlugRoute = AuthorsSlugRouteImport.update({
+  id: '/authors/$slug',
+  path: '/authors/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminSystemRoute =
+  AuthenticatedAdminSystemRouteImport.update({
+    id: '/system',
+    path: '/system',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSchemaRoute =
+  AuthenticatedAdminSchemaRouteImport.update({
+    id: '/schema',
+    path: '/schema',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminManualRoute =
+  AuthenticatedAdminManualRouteImport.update({
+    id: '/manual',
+    path: '/manual',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminDatabaseRoute =
+  AuthenticatedAdminDatabaseRouteImport.update({
+    id: '/database',
+    path: '/database',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConditionsRoute =
+  AuthenticatedAdminConditionsRouteImport.update({
+    id: '/conditions',
+    path: '/conditions',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSourcesIndexRoute =
+  AuthenticatedAdminSourcesIndexRouteImport.update({
+    id: '/sources/',
+    path: '/sources/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminJobsIndexRoute =
+  AuthenticatedAdminJobsIndexRouteImport.update({
+    id: '/jobs/',
+    path: '/jobs/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAuthorsIndexRoute =
+  AuthenticatedAdminAuthorsIndexRouteImport.update({
+    id: '/authors/',
+    path: '/authors/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminArticlesIndexRoute =
+  AuthenticatedAdminArticlesIndexRouteImport.update({
+    id: '/articles/',
+    path: '/articles/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const ApiPublicCronTickRoute = ApiPublicCronTickRouteImport.update({
+  id: '/api/public/cron/tick',
+  path: '/api/public/cron/tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminSourcesIdRoute =
+  AuthenticatedAdminSourcesIdRouteImport.update({
+    id: '/sources/$id',
+    path: '/sources/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminJobsIdRoute =
+  AuthenticatedAdminJobsIdRouteImport.update({
+    id: '/jobs/$id',
+    path: '/jobs/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAuthorsIdRoute =
+  AuthenticatedAdminAuthorsIdRouteImport.update({
+    id: '/authors/$id',
+    path: '/authors/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminArticlesIdRoute =
+  AuthenticatedAdminArticlesIdRouteImport.update({
+    id: '/articles/$id',
+    path: '/articles/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/disclosure': typeof DisclosureRoute
+  '/search': typeof SearchRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/authors/$slug': typeof AuthorsSlugRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/blogs/': typeof BlogsIndexRoute
+  '/admin/conditions': typeof AuthenticatedAdminConditionsRoute
+  '/admin/database': typeof AuthenticatedAdminDatabaseRoute
+  '/admin/manual': typeof AuthenticatedAdminManualRoute
+  '/admin/schema': typeof AuthenticatedAdminSchemaRoute
+  '/admin/system': typeof AuthenticatedAdminSystemRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/articles/$id': typeof AuthenticatedAdminArticlesIdRoute
+  '/admin/authors/$id': typeof AuthenticatedAdminAuthorsIdRoute
+  '/admin/jobs/$id': typeof AuthenticatedAdminJobsIdRoute
+  '/admin/sources/$id': typeof AuthenticatedAdminSourcesIdRoute
+  '/api/public/cron/tick': typeof ApiPublicCronTickRoute
+  '/admin/articles/': typeof AuthenticatedAdminArticlesIndexRoute
+  '/admin/authors/': typeof AuthenticatedAdminAuthorsIndexRoute
+  '/admin/jobs/': typeof AuthenticatedAdminJobsIndexRoute
+  '/admin/sources/': typeof AuthenticatedAdminSourcesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/disclosure': typeof DisclosureRoute
+  '/search': typeof SearchRoute
+  '/authors/$slug': typeof AuthorsSlugRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/blogs': typeof BlogsIndexRoute
+  '/admin/conditions': typeof AuthenticatedAdminConditionsRoute
+  '/admin/database': typeof AuthenticatedAdminDatabaseRoute
+  '/admin/manual': typeof AuthenticatedAdminManualRoute
+  '/admin/schema': typeof AuthenticatedAdminSchemaRoute
+  '/admin/system': typeof AuthenticatedAdminSystemRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/articles/$id': typeof AuthenticatedAdminArticlesIdRoute
+  '/admin/authors/$id': typeof AuthenticatedAdminAuthorsIdRoute
+  '/admin/jobs/$id': typeof AuthenticatedAdminJobsIdRoute
+  '/admin/sources/$id': typeof AuthenticatedAdminSourcesIdRoute
+  '/api/public/cron/tick': typeof ApiPublicCronTickRoute
+  '/admin/articles': typeof AuthenticatedAdminArticlesIndexRoute
+  '/admin/authors': typeof AuthenticatedAdminAuthorsIndexRoute
+  '/admin/jobs': typeof AuthenticatedAdminJobsIndexRoute
+  '/admin/sources': typeof AuthenticatedAdminSourcesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/disclosure': typeof DisclosureRoute
+  '/search': typeof SearchRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/authors/$slug': typeof AuthorsSlugRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/blogs/': typeof BlogsIndexRoute
+  '/_authenticated/admin/conditions': typeof AuthenticatedAdminConditionsRoute
+  '/_authenticated/admin/database': typeof AuthenticatedAdminDatabaseRoute
+  '/_authenticated/admin/manual': typeof AuthenticatedAdminManualRoute
+  '/_authenticated/admin/schema': typeof AuthenticatedAdminSchemaRoute
+  '/_authenticated/admin/system': typeof AuthenticatedAdminSystemRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/articles/$id': typeof AuthenticatedAdminArticlesIdRoute
+  '/_authenticated/admin/authors/$id': typeof AuthenticatedAdminAuthorsIdRoute
+  '/_authenticated/admin/jobs/$id': typeof AuthenticatedAdminJobsIdRoute
+  '/_authenticated/admin/sources/$id': typeof AuthenticatedAdminSourcesIdRoute
+  '/api/public/cron/tick': typeof ApiPublicCronTickRoute
+  '/_authenticated/admin/articles/': typeof AuthenticatedAdminArticlesIndexRoute
+  '/_authenticated/admin/authors/': typeof AuthenticatedAdminAuthorsIndexRoute
+  '/_authenticated/admin/jobs/': typeof AuthenticatedAdminJobsIndexRoute
+  '/_authenticated/admin/sources/': typeof AuthenticatedAdminSourcesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/disclosure'
+    | '/search'
+    | '/admin'
+    | '/authors/$slug'
+    | '/blogs/$slug'
+    | '/category/$slug'
+    | '/blogs/'
+    | '/admin/conditions'
+    | '/admin/database'
+    | '/admin/manual'
+    | '/admin/schema'
+    | '/admin/system'
+    | '/admin/'
+    | '/admin/articles/$id'
+    | '/admin/authors/$id'
+    | '/admin/jobs/$id'
+    | '/admin/sources/$id'
+    | '/api/public/cron/tick'
+    | '/admin/articles/'
+    | '/admin/authors/'
+    | '/admin/jobs/'
+    | '/admin/sources/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/disclosure'
+    | '/search'
+    | '/authors/$slug'
+    | '/blogs/$slug'
+    | '/category/$slug'
+    | '/blogs'
+    | '/admin/conditions'
+    | '/admin/database'
+    | '/admin/manual'
+    | '/admin/schema'
+    | '/admin/system'
+    | '/admin'
+    | '/admin/articles/$id'
+    | '/admin/authors/$id'
+    | '/admin/jobs/$id'
+    | '/admin/sources/$id'
+    | '/api/public/cron/tick'
+    | '/admin/articles'
+    | '/admin/authors'
+    | '/admin/jobs'
+    | '/admin/sources'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/about'
+    | '/auth'
+    | '/disclosure'
+    | '/search'
+    | '/_authenticated/admin'
+    | '/authors/$slug'
+    | '/blogs/$slug'
+    | '/category/$slug'
+    | '/blogs/'
+    | '/_authenticated/admin/conditions'
+    | '/_authenticated/admin/database'
+    | '/_authenticated/admin/manual'
+    | '/_authenticated/admin/schema'
+    | '/_authenticated/admin/system'
+    | '/_authenticated/admin/'
+    | '/_authenticated/admin/articles/$id'
+    | '/_authenticated/admin/authors/$id'
+    | '/_authenticated/admin/jobs/$id'
+    | '/_authenticated/admin/sources/$id'
+    | '/api/public/cron/tick'
+    | '/_authenticated/admin/articles/'
+    | '/_authenticated/admin/authors/'
+    | '/_authenticated/admin/jobs/'
+    | '/_authenticated/admin/sources/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
+  DisclosureRoute: typeof DisclosureRoute
+  SearchRoute: typeof SearchRoute
+  AuthorsSlugRoute: typeof AuthorsSlugRoute
+  BlogsSlugRoute: typeof BlogsSlugRoute
+  CategorySlugRoute: typeof CategorySlugRoute
+  BlogsIndexRoute: typeof BlogsIndexRoute
+  ApiPublicCronTickRoute: typeof ApiPublicCronTickRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclosure': {
+      id: '/disclosure'
+      path: '/disclosure'
+      fullPath: '/disclosure'
+      preLoaderRoute: typeof DisclosureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +403,210 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blogs/': {
+      id: '/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs/'
+      preLoaderRoute: typeof BlogsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/category/$slug': {
+      id: '/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/category/$slug'
+      preLoaderRoute: typeof CategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs/$slug': {
+      id: '/blogs/$slug'
+      path: '/blogs/$slug'
+      fullPath: '/blogs/$slug'
+      preLoaderRoute: typeof BlogsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/authors/$slug': {
+      id: '/authors/$slug'
+      path: '/authors/$slug'
+      fullPath: '/authors/$slug'
+      preLoaderRoute: typeof AuthorsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/system': {
+      id: '/_authenticated/admin/system'
+      path: '/system'
+      fullPath: '/admin/system'
+      preLoaderRoute: typeof AuthenticatedAdminSystemRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/schema': {
+      id: '/_authenticated/admin/schema'
+      path: '/schema'
+      fullPath: '/admin/schema'
+      preLoaderRoute: typeof AuthenticatedAdminSchemaRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/manual': {
+      id: '/_authenticated/admin/manual'
+      path: '/manual'
+      fullPath: '/admin/manual'
+      preLoaderRoute: typeof AuthenticatedAdminManualRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/database': {
+      id: '/_authenticated/admin/database'
+      path: '/database'
+      fullPath: '/admin/database'
+      preLoaderRoute: typeof AuthenticatedAdminDatabaseRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/conditions': {
+      id: '/_authenticated/admin/conditions'
+      path: '/conditions'
+      fullPath: '/admin/conditions'
+      preLoaderRoute: typeof AuthenticatedAdminConditionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/sources/': {
+      id: '/_authenticated/admin/sources/'
+      path: '/sources'
+      fullPath: '/admin/sources/'
+      preLoaderRoute: typeof AuthenticatedAdminSourcesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/jobs/': {
+      id: '/_authenticated/admin/jobs/'
+      path: '/jobs'
+      fullPath: '/admin/jobs/'
+      preLoaderRoute: typeof AuthenticatedAdminJobsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/authors/': {
+      id: '/_authenticated/admin/authors/'
+      path: '/authors'
+      fullPath: '/admin/authors/'
+      preLoaderRoute: typeof AuthenticatedAdminAuthorsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/articles/': {
+      id: '/_authenticated/admin/articles/'
+      path: '/articles'
+      fullPath: '/admin/articles/'
+      preLoaderRoute: typeof AuthenticatedAdminArticlesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/api/public/cron/tick': {
+      id: '/api/public/cron/tick'
+      path: '/api/public/cron/tick'
+      fullPath: '/api/public/cron/tick'
+      preLoaderRoute: typeof ApiPublicCronTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/sources/$id': {
+      id: '/_authenticated/admin/sources/$id'
+      path: '/sources/$id'
+      fullPath: '/admin/sources/$id'
+      preLoaderRoute: typeof AuthenticatedAdminSourcesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/jobs/$id': {
+      id: '/_authenticated/admin/jobs/$id'
+      path: '/jobs/$id'
+      fullPath: '/admin/jobs/$id'
+      preLoaderRoute: typeof AuthenticatedAdminJobsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/authors/$id': {
+      id: '/_authenticated/admin/authors/$id'
+      path: '/authors/$id'
+      fullPath: '/admin/authors/$id'
+      preLoaderRoute: typeof AuthenticatedAdminAuthorsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/articles/$id': {
+      id: '/_authenticated/admin/articles/$id'
+      path: '/articles/$id'
+      fullPath: '/admin/articles/$id'
+      preLoaderRoute: typeof AuthenticatedAdminArticlesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminConditionsRoute: typeof AuthenticatedAdminConditionsRoute
+  AuthenticatedAdminDatabaseRoute: typeof AuthenticatedAdminDatabaseRoute
+  AuthenticatedAdminManualRoute: typeof AuthenticatedAdminManualRoute
+  AuthenticatedAdminSchemaRoute: typeof AuthenticatedAdminSchemaRoute
+  AuthenticatedAdminSystemRoute: typeof AuthenticatedAdminSystemRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminArticlesIdRoute: typeof AuthenticatedAdminArticlesIdRoute
+  AuthenticatedAdminAuthorsIdRoute: typeof AuthenticatedAdminAuthorsIdRoute
+  AuthenticatedAdminJobsIdRoute: typeof AuthenticatedAdminJobsIdRoute
+  AuthenticatedAdminSourcesIdRoute: typeof AuthenticatedAdminSourcesIdRoute
+  AuthenticatedAdminArticlesIndexRoute: typeof AuthenticatedAdminArticlesIndexRoute
+  AuthenticatedAdminAuthorsIndexRoute: typeof AuthenticatedAdminAuthorsIndexRoute
+  AuthenticatedAdminJobsIndexRoute: typeof AuthenticatedAdminJobsIndexRoute
+  AuthenticatedAdminSourcesIndexRoute: typeof AuthenticatedAdminSourcesIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminConditionsRoute: AuthenticatedAdminConditionsRoute,
+  AuthenticatedAdminDatabaseRoute: AuthenticatedAdminDatabaseRoute,
+  AuthenticatedAdminManualRoute: AuthenticatedAdminManualRoute,
+  AuthenticatedAdminSchemaRoute: AuthenticatedAdminSchemaRoute,
+  AuthenticatedAdminSystemRoute: AuthenticatedAdminSystemRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminArticlesIdRoute: AuthenticatedAdminArticlesIdRoute,
+  AuthenticatedAdminAuthorsIdRoute: AuthenticatedAdminAuthorsIdRoute,
+  AuthenticatedAdminJobsIdRoute: AuthenticatedAdminJobsIdRoute,
+  AuthenticatedAdminSourcesIdRoute: AuthenticatedAdminSourcesIdRoute,
+  AuthenticatedAdminArticlesIndexRoute: AuthenticatedAdminArticlesIndexRoute,
+  AuthenticatedAdminAuthorsIndexRoute: AuthenticatedAdminAuthorsIndexRoute,
+  AuthenticatedAdminJobsIndexRoute: AuthenticatedAdminJobsIndexRoute,
+  AuthenticatedAdminSourcesIndexRoute: AuthenticatedAdminSourcesIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
+  DisclosureRoute: DisclosureRoute,
+  SearchRoute: SearchRoute,
+  AuthorsSlugRoute: AuthorsSlugRoute,
+  BlogsSlugRoute: BlogsSlugRoute,
+  CategorySlugRoute: CategorySlugRoute,
+  BlogsIndexRoute: BlogsIndexRoute,
+  ApiPublicCronTickRoute: ApiPublicCronTickRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
