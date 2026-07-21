@@ -221,6 +221,11 @@ export const manualGenerate = createServerFn({ method: "POST" }).middleware([req
     category: z.string(),
     prompt: z.string().min(20).max(2000),
     article_type: z.enum(["news","analysis","explainer","list","profile","history","guide"]).default("explainer"),
+    references: z.array(z.object({
+      title: z.string().min(1).max(300),
+      url: z.string().url(),
+      authority: z.enum(["primary","secondary","tertiary"]).default("primary"),
+    })).min(1).max(5).optional(),
     reference_url: z.string().url().optional(),
     reference_title: z.string().optional(),
     dry_run: z.boolean().optional(),
@@ -230,12 +235,12 @@ export const manualGenerate = createServerFn({ method: "POST" }).middleware([req
   if (role !== "admin" && role !== "editor") throw new Error("Forbidden");
   const { data: cat } = await context.supabase.from("categories").select("id,slug,label").eq("slug", data.category).maybeSingle();
   if (!cat) throw new Error("Unknown category");
-  const refs = [{
+  const refs = data.references?.map((ref) => ({ provider: "manual", ...ref })) ?? (data.reference_url ? [{
     provider: "manual",
     title: data.reference_title ?? "Manual reference",
-    url: data.reference_url ?? "https://blogdel.local/manual",
+    url: data.reference_url,
     authority: "primary" as const,
-  }];
+  }] : []);
   const minRefs = REFERENCE_MINIMA[cat.slug] ?? 1;
   if (refs.length < minRefs) throw new Error(`Category ${cat.slug} requires at least ${minRefs} reference(s).`);
   const input = sourceInputSchema.parse({
