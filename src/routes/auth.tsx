@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 const searchSchema = z.object({ next: z.string().optional() });
 const REVIEW_EMAIL = "review@blogdel.dev";
-const REVIEW_PASSWORD = "Review#password";
+const REVIEW_PASSWORD = "Review#Password1";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
