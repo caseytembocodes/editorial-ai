@@ -148,12 +148,14 @@ export const Route = createFileRoute("/api/public/cron/tick")({
 });
 
 async function runOrJson(request: Request, reason: string) {
-  const key = request.headers.get("apikey") ?? request.headers.get("x-api-key");
-  const expected = process.env.SUPABASE_PUBLISHABLE_KEY;
-  const token = request.headers.get("x-cron-token");
   const expectedToken = process.env.CRON_TOKEN;
-  const authorized = (expected && key === expected) || (expectedToken && token === expectedToken);
-  if (!authorized) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { "content-type": "application/json" } });
+  if (!expectedToken) {
+    return new Response(JSON.stringify({ error: "CRON_TOKEN not configured" }), { status: 503, headers: { "content-type": "application/json" } });
+  }
+  const token = request.headers.get("x-cron-token");
+  if (!token || token !== expectedToken) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { "content-type": "application/json" } });
+  }
   try {
     const result = await runTick(reason);
     return new Response(JSON.stringify(result), { headers: { "content-type": "application/json" } });
