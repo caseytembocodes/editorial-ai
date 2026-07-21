@@ -4,6 +4,12 @@
 
 [Blogdel](https://blogdel.blog) discovers story ideas, delegates them to AI writers, validates every result, and publishes structured articles through a real editorial pipeline. It combines a public publication with an authenticated operations dashboard for sources, jobs, articles, authors, system state, manual generation, and scheduling.
 
+## Links
+
+- **Publication:** [blogdel.blog](https://blogdel.blog)
+- **Development deployment:** [blogdel.lovable.app](https://blogdel.lovable.app)
+- **Source repository:** [caseytembocodes/editorial-ai](https://github.com/caseytembocodes/editorial-ai/)
+
 Blogdel was created for [OpenAI Build Week](https://openai.com/build-week/), a global challenge to explore what people can bring to life with Codex. The challenge celebrates thoughtful use of GPT‑5.6 and Codex across technical implementation, design and user experience, potential impact, and quality of the idea. Blogdel's answer is simple: do not make AI imitate a text box—give it a newsroom to operate.
 
 ## What it does
@@ -84,4 +90,3 @@ npm run build
 ## Status
 
 Built, deployed, scheduled, and submitted with equal parts engineering discipline and deadline energy. 🫡
-
