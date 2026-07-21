@@ -702,6 +702,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _blogdel_store_cron_token: {
+        Args: { _token: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
