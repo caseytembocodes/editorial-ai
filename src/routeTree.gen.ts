@@ -607,6 +607,4 @@ const rootRouteChildren: RootRouteChildren = {
   BlogsIndexRoute: BlogsIndexRoute,
   ApiPublicCronTickRoute: ApiPublicCronTickRoute,
 }
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteIm
