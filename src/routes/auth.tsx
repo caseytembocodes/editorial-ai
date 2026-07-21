@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 const searchSchema = z.object({ next: z.string().optional() });
+const REVIEW_EMAIL = "review@blogdel.dev";
+const REVIEW_PASSWORD = "Review#password";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
@@ -22,8 +24,8 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const nav = useNavigate();
   const { next } = Route.useSearch();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(REVIEW_EMAIL);
+  const [password, setPassword] = useState(REVIEW_PASSWORD);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -39,15 +41,6 @@ function AuthPage() {
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Signed in");
-    nav({ to: next && next.startsWith("/") ? next as any : "/admin" });
-  };
-  const signUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    const { error } = await supabase.auth.signUp({ email, password });
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success("Account created");
     nav({ to: next && next.startsWith("/") ? next as any : "/admin" });
   };
   const google = async () => {
@@ -69,29 +62,25 @@ function AuthPage() {
         <Card>
           <CardHeader>
             <CardTitle>Staff sign in</CardTitle>
-            <CardDescription>Editors and admins only. The first person to sign in becomes an admin.</CardDescription>
+            <CardDescription>Staff sign-in, with read-only reviewer access for evaluators.</CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="mb-4 rounded-md border border-border bg-muted/40 p-3 text-sm">
+              <div className="font-medium">Reviewer credentials (read-only)</div>
+              <div className="mt-1 font-mono text-xs">{REVIEW_EMAIL}</div>
+              <div className="font-mono text-xs">{REVIEW_PASSWORD}</div>
+            </div>
             <Tabs defaultValue="signin">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign in</TabsTrigger>
-                <TabsTrigger value="signup">Create account</TabsTrigger>
+                <TabsTrigger value="signup" disabled title="Account creation is disabled. Ask a Blogdel administrator for access.">Create account</TabsTrigger>
               </TabsList>
-              <TabsContent value="signin">
-                <form onSubmit={signIn} className="space-y-3 mt-2">
-                  <div><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                  <div><Label>Password</Label><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-                  <Button className="w-full" disabled={busy} type="submit">Sign in</Button>
-                </form>
-              </TabsContent>
-              <TabsContent value="signup">
-                <form onSubmit={signUp} className="space-y-3 mt-2">
-                  <div><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                  <div><Label>Password</Label><Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-                  <Button className="w-full" disabled={busy} type="submit">Create account</Button>
-                </form>
-              </TabsContent>
             </Tabs>
+            <form onSubmit={signIn} className="space-y-3 mt-3">
+              <div><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+              <div><Label>Password</Label><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+              <Button className="w-full" disabled={busy} type="submit">Sign in</Button>
+            </form>
             <div className="my-4 flex items-center gap-2"><div className="h-px flex-1 bg-border" /><span className="text-xs text-muted-foreground uppercase tracking-widest">or</span><div className="h-px flex-1 bg-border" /></div>
             <Button variant="outline" className="w-full" disabled={busy} onClick={google}>Continue with Google</Button>
           </CardContent>

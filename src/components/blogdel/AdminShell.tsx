@@ -61,7 +61,19 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <main className="p-8 max-w-6xl">
-        {children}
+        {roleQ.data?.role === "viewer" && (
+          <div className="mb-5 rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm" role="status">
+            <div className="font-medium">Reviewer mode: read-only</div>
+            <div className="text-muted-foreground">Actions are visible for evaluation but disabled. An editor or administrator account can generate jobs, retry runs, edit content, publish articles, and change system settings.</div>
+          </div>
+        )}
+        <fieldset
+          disabled={roleQ.data?.role === "viewer"}
+          title={roleQ.data?.role === "viewer" ? "This action requires an editor or administrator account with write access." : undefined}
+          className="min-w-0 border-0 p-0 m-0"
+        >
+          {children}
+        </fieldset>
       </main>
     </div>
   );
