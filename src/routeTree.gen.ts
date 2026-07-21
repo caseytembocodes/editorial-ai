@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ReadmeRouteImport } from './routes/readme'
 import { Route as DisclosureRouteImport } from './routes/disclosure'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -39,6 +40,11 @@ import { Route as AuthenticatedAdminArticlesIdRouteImport } from './routes/_auth
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadmeRoute = ReadmeRouteImport.update({
+  id: '/readme',
+  path: '/readme',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DisclosureRoute = DisclosureRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/disclosure': typeof DisclosureRoute
+  '/readme': typeof ReadmeRoute
   '/search': typeof SearchRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authors/$slug': typeof AuthorsSlugRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/disclosure': typeof DisclosureRoute
+  '/readme': typeof ReadmeRoute
   '/search': typeof SearchRoute
   '/authors/$slug': typeof AuthorsSlugRoute
   '/blogs/$slug': typeof BlogsSlugRoute
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/disclosure': typeof DisclosureRoute
+  '/readme': typeof ReadmeRoute
   '/search': typeof SearchRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authors/$slug': typeof AuthorsSlugRoute
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/disclosure'
+    | '/readme'
     | '/search'
     | '/admin'
     | '/authors/$slug'
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/disclosure'
+    | '/readme'
     | '/search'
     | '/authors/$slug'
     | '/blogs/$slug'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/disclosure'
+    | '/readme'
     | '/search'
     | '/_authenticated/admin'
     | '/authors/$slug'
@@ -351,6 +363,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   DisclosureRoute: typeof DisclosureRoute
+  ReadmeRoute: typeof ReadmeRoute
   SearchRoute: typeof SearchRoute
   AuthorsSlugRoute: typeof AuthorsSlugRoute
   BlogsSlugRoute: typeof BlogsSlugRoute
@@ -366,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/readme': {
+      id: '/readme'
+      path: '/readme'
+      fullPath: '/readme'
+      preLoaderRoute: typeof ReadmeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/disclosure': {
@@ -600,6 +620,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   DisclosureRoute: DisclosureRoute,
+  ReadmeRoute: ReadmeRoute,
   SearchRoute: SearchRoute,
   AuthorsSlugRoute: AuthorsSlugRoute,
   BlogsSlugRoute: BlogsSlugRoute,

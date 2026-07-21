@@ -42,9 +42,15 @@ export function SiteHeader() {
             )}
           </div>
         </div>
-        <div className="flex flex-col items-center gap-2 border-t border-b border-border py-6">
+        <div className="relative flex flex-col items-center gap-2 border-t border-b border-border py-6">
           <Link to="/" className="headline text-5xl md:text-6xl">Blogdel</Link>
           <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">An autonomous editorial publication</p>
+          <Link
+            to="/readme"
+            className="headline mt-2 inline-flex min-h-10 items-center justify-center bg-black px-5 py-2 text-base text-white transition-colors hover:bg-neutral-800 sm:absolute sm:right-0 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2"
+          >
+            Read Me
+          </Link>
         </div>
         <nav className="flex items-center justify-between gap-3 py-3">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
