@@ -278,8 +278,18 @@ export const manualGenerate = createServerFn({ method: "POST" }).middleware([req
   // Run generation on the server.
   const { runGeneration } = await import("./generation.server");
   const started = Date.now();
+  const onProviderEvent = async (ev: any) => {
+    try {
+      await context.supabase.from("provider_events").insert({
+        job_id: job.id, provider: ev.provider, model: ev.model ?? null,
+        event_type: ev.event_type, error_code: ev.error_code ?? null,
+        status_code: ev.status_code ?? null, latency_ms: ev.latency_ms,
+        metadata: ev.message ? ({ message: ev.message } as any) : ({} as any),
+      });
+    } catch { /* diagnostics must never interrupt the fallback chain */ }
+  };
   try {
-    const article = await runGeneration({ input, categorySlug: cat.slug });
+    const article = await runGeneration({ input, categorySlug: cat.slug, onProviderEvent });
     const insertRes = await context.supabase.from("articles").insert({
       source_item_id: sourceItem.id, category_id: cat.id, author_id: author.id, generation_job_id: job.id,
       slug: article.slug + "-" + Math.random().toString(36).slice(2,6),
@@ -299,23 +309,17 @@ export const manualGenerate = createServerFn({ method: "POST" }).middleware([req
     await context.supabase.from("delegation_jobs").update({
       status: "completed", completed_at: new Date().toISOString(), output_payload: article as any,
     }).eq("id", job.id);
-    await context.supabase.from("provider_events").insert({
-      job_id: job.id, provider: article.__provider, model: article.__model,
-      event_type: "request_completed", latency_ms: Date.now() - started, status_code: 200,
-      metadata: {} as any,
-    });
     await context.supabase.from("source_items").update({ status: "processed" }).eq("id", sourceItem.id);
     await context.supabase.from("authors").update({ last_used_at: new Date().toISOString(), article_count: (author as any).article_count ? undefined : undefined }).eq("id", author.id);
     return { ok: true, article_id: insertRes.data.id, provider: article.__provider, model: article.__model };
   } catch (e: any) {
+    // Per-provider diagnostics have already been written via onProviderEvent.
+    // Avoid a misleading synthetic "groq schema_failed" event when the pipeline
+    // as a whole fails after multiple providers were attempted.
     await context.supabase.from("delegation_jobs").update({
-      status: "failed", completed_at: new Date().toISOString(), failure_reason: e?.message ?? String(e),
+      status: "failed", completed_at: new Date().toISOString(),
+      failure_reason: (e?.message ?? String(e)).slice(0, 800),
     }).eq("id", job.id);
-    await context.supabase.from("provider_events").insert({
-      job_id: job.id, provider: "groq", event_type: "schema_failed",
-      latency_ms: Date.now() - started, error_code: e?.code ?? "gen_failed",
-      metadata: { message: e?.message ?? String(e) } as any,
-    });
     await context.supabase.from("source_items").update({ status: "failed" }).eq("id", sourceItem.id);
     throw e;
   }

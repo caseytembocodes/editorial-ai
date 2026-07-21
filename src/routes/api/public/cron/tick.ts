@@ -87,8 +87,18 @@ async function runTick(reason: string): Promise<any> {
     await sb.from("source_items").update({ status: "pending" }).eq("id", item.id);
 
     const started = Date.now();
+    const onProviderEvent = async (ev: any) => {
+      try {
+        await sb.from("provider_events").insert({
+          job_id: job!.id, provider: ev.provider, model: ev.model ?? null,
+          event_type: ev.event_type, error_code: ev.error_code ?? null,
+          status_code: ev.status_code ?? null, latency_ms: ev.latency_ms,
+          metadata: ev.message ? ({ message: ev.message } as any) : ({} as any),
+        });
+      } catch { /* diagnostics must never interrupt the fallback chain */ }
+    };
     try {
-      const article = await runGeneration({ input, categorySlug: catSlug });
+      const article = await runGeneration({ input, categorySlug: catSlug, onProviderEvent });
       const words = article.body_markdown.split(/\s+/).filter(Boolean).length;
       if (article.body_markdown.length < (sys.min_body_length ?? 500)) throw new Error("body too short");
       const slug = slugify(article.slug, { lower: true, strict: true }).slice(0, 80) + "-" + Math.random().toString(36).slice(2,6);
@@ -108,16 +118,20 @@ async function runTick(reason: string): Promise<any> {
         })));
       }
       await sb.from("delegation_jobs").update({ status: "completed", completed_at: new Date().toISOString(), output_payload: article as any }).eq("id", job!.id);
-      await sb.from("provider_events").insert({ job_id: job!.id, provider: article.__provider, model: article.__model, event_type: "request_completed", latency_ms: Date.now() - started, status_code: 200, metadata: {} as any });
       await sb.from("source_items").update({ status: "processed" }).eq("id", item.id);
       await sb.from("authors").update({ last_used_at: new Date().toISOString() }).eq("id", author.id);
       producedByCategory[catSlug] = (producedByCategory[catSlug] ?? 0) + 1;
       results.push({ item: item.id, ok: true, article: articleRow.id, status });
     } catch (e: any) {
-      await sb.from("delegation_jobs").update({ status: "failed", completed_at: new Date().toISOString(), failure_reason: e?.message ?? String(e) }).eq("id", job!.id);
-      await sb.from("provider_events").insert({ job_id: job!.id, provider: "groq", event_type: "schema_failed", latency_ms: Date.now() - started, error_code: "gen_failed", metadata: { message: e?.message } as any });
+      // Per-provider diagnostics have already been written via onProviderEvent.
+      // Do NOT insert a synthetic "groq schema_failed" event here — that would
+      // misattribute a pipeline-level failure to a specific provider.
+      await sb.from("delegation_jobs").update({
+        status: "failed", completed_at: new Date().toISOString(),
+        failure_reason: (e?.message ?? String(e)).slice(0, 800),
+      }).eq("id", job!.id);
       await sb.from("source_items").update({ status: "failed" }).eq("id", item.id);
-      results.push({ item: item.id, error: e?.message ?? String(e) });
+      results.push({ item: item.id, error: e?.message ?? String(e), latency_ms: Date.now() - started });
     }
   }
 
@@ -134,12 +148,14 @@ export const Route = createFileRoute("/api/public/cron/tick")({
 });
 
 async function runOrJson(request: Request, reason: string) {
-  const key = request.headers.get("apikey") ?? request.headers.get("x-api-key");
-  const expected = process.env.SUPABASE_PUBLISHABLE_KEY;
-  const token = request.headers.get("x-cron-token");
   const expectedToken = process.env.CRON_TOKEN;
-  const authorized = (expected && key === expected) || (expectedToken && token === expectedToken);
-  if (!authorized) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { "content-type": "application/json" } });
+  if (!expectedToken) {
+    return new Response(JSON.stringify({ error: "CRON_TOKEN not configured" }), { status: 503, headers: { "content-type": "application/json" } });
+  }
+  const token = request.headers.get("x-cron-token");
+  if (!token || token !== expectedToken) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { "content-type": "application/json" } });
+  }
   try {
     const result = await runTick(reason);
     return new Response(JSON.stringify(result), { headers: { "content-type": "application/json" } });
