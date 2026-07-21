@@ -195,7 +195,14 @@ async function callGroq(input: Input, model: string): Promise<Output> {
         { role: "user", content: buildUserPrompt(input) },
       ],
     }),
-  }).catch((e) => { throw new ProviderError({ event_type: "provider_unavailable", error_code: "network_error", message: e?.message ?? "network error" }); });
+    signal: AbortSignal.timeout(30_000),
+  }).catch((e) => {
+    const name = e?.name;
+    if (name === "TimeoutError" || name === "AbortError") {
+      throw new ProviderError({ event_type: "timeout", error_code: "timeout", message: "Groq request timed out after 30s" });
+    }
+    throw new ProviderError({ event_type: "provider_unavailable", error_code: "network_error", message: e?.message ?? "network error" });
+  });
   const body = await httpJson(res);
   const parsed = parseArticleJson(body?.choices?.[0]?.message?.content);
   return { ...parsed, __provider: "groq", __model: model };
