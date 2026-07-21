@@ -610,8 +610,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-  }
-}
